@@ -1,0 +1,15 @@
+body {
+  padding-top: 50px;
+}
+.body-container {
+  padding: 40px 15px;
+}
+.content-names{
+	text-align: right;
+}
+.contents{
+	text-align: left;
+}
+.hint_text{
+	padding-bottom: 14px;
+}

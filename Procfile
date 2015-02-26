@@ -1,0 +1,1 @@
+web: gunicorn getcontactdetails.wsgi --log-file -

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+	<div class="hint_text">
+		<span>
+			<b><i>Enter an email, we will try to get all social media profiles.<i></b>
+		</span>
+	</div>
+	<form method='post' action=''>{% csrf_token %}
+		<div class="form-group">
+			<label for="InputYourName">Email</label>
+			<input type="text" name="email" class="form-control" id="InputYourName" placeholder="Enter an Email">
+		</div>
+		<button type="submit" class="btn btn-primary">Search</button>
+	</form>
+{% endblock %}
