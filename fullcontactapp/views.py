@@ -30,7 +30,8 @@ def home(request):
 			else:
 				print r.json()
 				details = None
-				return HttpResponse('not found')
+				msg = 'msg'
+				return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
 		qdict = QueryDict('', mutable=True)
 		qdict.update(details)
 		return render_to_response('result.html', context_instance=RequestContext(request, {'data':qdict, 'email':contact.email}))
