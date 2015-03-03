@@ -22,3 +22,11 @@ class FullContact(models.Model):
 
 	def __unicode__(self):
 		return str(self.email)
+
+
+class NotFoundContact(models.Model):
+	email = models.CharField(max_length=90, unique=True)
+	count = models.IntegerField(default=1)
+
+	def __unicode__(self):
+		return str(self.email)

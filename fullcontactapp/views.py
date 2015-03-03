@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
 
-from fullcontactapp.models import Contact
+from fullcontactapp.models import Contact, NotFoundContact
 from getcontactdetails.settings import FULLCONTACT_API_KEY
 
 def home(request):
@@ -28,7 +28,13 @@ def home(request):
 				contact = contact.fullcontact_set.create(email=email, details=details)
 				contact.save()
 			else:
-				print r.json()
+				try:
+					notfound = NotFoundContact.objects.get(email=email)
+					notfound.count += 1
+					notfound.save()
+				except ObjectDoesNotExist:
+					notfound = NotFoundContact.objects.create(email=email)
+					notfound.save()
 				details = None
 				msg = 'msg'
 				return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
