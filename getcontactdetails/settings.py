@@ -97,6 +97,12 @@ TEMPLATE_DIRS = (
 
 FULLCONTACT_API_KEY = '54ea4d775dcfd08'
 
+EMAIL_USE_TLS = True 
+EMAIL_HOST = 'smtp.mandrillapp.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'djangoajai@gmail.com'
+EMAIL_HOST_PASSWORD = 'GJ8sKrCyJLjKeeKNZ8XYfg'
+
 try:
     from local_settings import *
 except:

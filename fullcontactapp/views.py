@@ -1,14 +1,19 @@
 import ast
 import requests
-from django.shortcuts import render, render_to_response
-from django.http import HttpResponse
+from django.shortcuts import render, render_to_response, redirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.template import RequestContext
 from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 
 from fullcontactapp.models import Contact, NotFoundContact
 from getcontactdetails.settings import FULLCONTACT_API_KEY
+
+import mandrill
+MANDRILL_API_KEY = settings.EMAIL_HOST_PASSWORD
+mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
 
 def home(request):
 	if request.method == 'POST':
@@ -43,3 +48,25 @@ def home(request):
 		return render_to_response('result.html', context_instance=RequestContext(request, {'data':qdict, 'email':contact.email}))
 	else:
 		return render_to_response('home.html', context_instance=RequestContext(request, {}))
+
+def contact(request):
+	if request.method == 'POST':
+		name = request.POST.get('name')
+		email = request.POST.get('email')
+		content = request.POST.get('description')
+		print name,email,content
+		content = 'Name: '+name+'\n'+'Email: '+email+'\n'+'Message: '+content
+		try:
+			message = {'from_email':'djangoajai@gmail.com',
+					'subject': 'Socialprofiles',
+					'to': [{'email': 'ajai.sreyas@gmail.com',
+					'name': 'Ajai','type': 'to'}],
+					'text': content,}
+			result = mandrill_client.messages.send(message=message, async=False, ip_pool='Main Pool')
+			msg = 'Thanks for the message, We will get back to you shortly...'
+		except:
+			msg = 'some error occured'
+			pass
+		return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
+	else:
+		return render_to_response('contact.html', context_instance=RequestContext(request, {}))

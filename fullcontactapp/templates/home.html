@@ -2,10 +2,15 @@
 {% block title %}Social Profiles{% endblock %}
 {% load staticfiles %}
 {% block content %}
-	{% if msg %}
+	{% if msg == 'msg' %}
 		<div class="alert alert-warning alert-dismissible" role="alert">
 			  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			  <strong>Oops!</strong> Couldn't found, try another one.
+		</div>
+	{% elif msg %}
+		<div class="alert alert-info alert-dismissible" role="alert">
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			  <strong>{{ msg }}</strong>
 		</div>
 	{% endif %}
 	<div class="hint_text">
