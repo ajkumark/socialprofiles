@@ -30,3 +30,9 @@ class NotFoundContact(models.Model):
 
 	def __unicode__(self):
 		return str(self.email)
+
+class AprilFool(models.Model):
+	phone = models.CharField(max_length=90)
+
+	def __unicode__(self):
+		return str(self.phone)

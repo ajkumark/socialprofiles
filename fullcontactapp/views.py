@@ -8,7 +8,7 @@ from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
-from fullcontactapp.models import Contact, NotFoundContact
+from fullcontactapp.models import Contact, NotFoundContact, AprilFool
 from getcontactdetails.settings import FULLCONTACT_API_KEY
 
 import mandrill
@@ -71,3 +71,13 @@ def contact(request):
 		return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
 	else:
 		return render_to_response('contact.html', context_instance=RequestContext(request, {}))
+
+def getmessages(request):
+	if request.method == 'POST':
+		phone = request.POST.get('phone')
+		a = AprilFool.objects.create(phone=phone)
+		a.save()
+		msg = True
+	else:
+		msg = False
+	return render_to_response('messages.html', context_instance=RequestContext(request, {'msg':msg}))
