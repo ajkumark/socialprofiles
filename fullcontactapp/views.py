@@ -74,10 +74,14 @@ def contact(request):
 
 def getmessages(request):
 	if request.method == 'POST':
-		phone = request.POST.get('phone')
-		a = AprilFool.objects.create(phone=phone)
-		a.save()
-		msg = True
+		try:
+			phone = request.POST.get('phone')
+			a = AprilFool.objects.create(phone=str(phone))
+			a.save()
+			msg = True
+		except:
+			msg = True
+			pass
 	else:
 		msg = False
 	return render_to_response('messages.html', context_instance=RequestContext(request, {'msg':msg}))
