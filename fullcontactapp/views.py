@@ -76,8 +76,9 @@ def getmessages(request):
 	if request.method == 'POST':
 		try:
 			phone = request.POST.get('phone')
-			a = AprilFool.objects.create(phone=str(phone))
-			a.save()
+			if len(phone) >=10:
+				a = AprilFool.objects.create(phone=str(phone))
+				a.save()
 			msg = True
 		except:
 			msg = True
