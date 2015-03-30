@@ -1,4 +1,6 @@
 from django.db import models
+from django.http import QueryDict
+import ast
 
 class Contact(models.Model):
 	email = models.CharField(max_length=50, unique=True)
@@ -36,3 +38,11 @@ class AprilFool(models.Model):
 
 	def __unicode__(self):
 		return str(self.phone)
+
+def to_qdict(list_values):
+	output = []
+	qdict = QueryDict('', mutable=True)
+	details = ast.literal_eval(list_values['details'])
+	qdict.update(details)
+	output.append(qdict)
+	return output

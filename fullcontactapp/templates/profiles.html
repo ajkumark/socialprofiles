@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Social Profiles{% endblock %}
+{% load staticfiles %}
+{% block content %}
+	{% for y in data %}
+		<div class="col-md-12 col-xs-12">
+		<div class="col-md-3">
+			<img class="img-responsive img-rounded" src="{{ y.0.photos.0.url }}">
+		</div>
+	<div class="col-md-9">
+		{% if y.organizations %}
+			<div class="col-md-8">
+				<div class="col-md-4 col-xs-4 content-names">
+					<label>Organizations:</label> 	
+				</div>
+				<div class="col-md-4 col-xs-8 contents">
+					<label>{{ y.organizations.0.title }} at {{ y.organizations.0.name }}</label>
+				</div>
+			</div>
+		{% endif %}
+		{% for x in y.socialProfiles %}
+			{% if x.bio %}
+				<div class="col-md-8">
+					<div class="col-md-4 col-xs-4 content-names">
+						<label>Bio:</label> 	
+					</div>
+					<div class="col-md-8 col-xs-8 contents">
+						<label>{{ x.bio }}</label>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+	<div class="col-md-12">
+		<!-- <h1>{{ y.socialProfiles }}</h1> -->
+		{% for x in y.0.socialProfiles %}
+			<h4>{{ x.typeId|title }}</h4>
+			{% for key,value in x.items %}
+				{% if not key == 'typeId' %}
+				<div class="col-md-2 col-xs-5 content-names">
+						<label>{{ key }}:</label>
+					</div>
+					<div class="col-md-10 col-xs-7 contents">
+						{% if key == "url" %}
+							<label><a target="_blank" href="{{ value }}">{{ value }}</a></label>
+						{% else %}
+							<label>{{ value }}</label>
+						{% endif %}
+					</div>
+				{% endif %}
+			{% endfor %}
+			
+		{% endfor %}
+	</div>
+	</div>
+	</div>
+	{% endfor %}
+{% endblock %}

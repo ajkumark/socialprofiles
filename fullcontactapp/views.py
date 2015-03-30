@@ -8,7 +8,7 @@ from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
-from fullcontactapp.models import Contact, NotFoundContact, AprilFool
+from fullcontactapp.models import Contact, NotFoundContact, AprilFool, to_qdict, FullContact
 from getcontactdetails.settings import FULLCONTACT_API_KEY
 
 import mandrill
@@ -49,6 +49,11 @@ def home(request):
 	else:
 		msg = 'ssss'
 		return render_to_response('home.html', context_instance=RequestContext(request, {}))
+
+def view_profiles(request):
+	full = FullContact.objects.values('details')
+	output = map(to_qdict, full)
+	return render_to_response('profiles.html', context_instance=RequestContext(request, {'data':output}))
 
 def contact(request):
 	if request.method == 'POST':
