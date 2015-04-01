@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 
 from fullcontactapp.models import Contact, NotFoundContact, AprilFool, to_qdict, FullContact
 from getcontactdetails.settings import FULLCONTACT_API_KEY
@@ -50,6 +51,7 @@ def home(request):
 		msg = 'ssss'
 		return render_to_response('home.html', context_instance=RequestContext(request, {}))
 
+@login_required(login_url='/')
 def view_profiles(request):
 	full = FullContact.objects.values('details')
 	output = map(to_qdict, full)
