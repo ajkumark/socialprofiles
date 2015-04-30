@@ -93,3 +93,6 @@ def getmessages(request):
 	else:
 		msg = False
 	return render_to_response('messages.html', context_instance=RequestContext(request, {'msg':msg}))
+
+def test(request):
+	return render_to_response('test.html', context_instance=RequestContext(request))

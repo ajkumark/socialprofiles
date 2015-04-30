@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^contact/', 'fullcontactapp.views.contact', name='contact'),
     url(r'^getmessages', 'fullcontactapp.views.getmessages', name='getmessages'),
     url(r'^view_profiles', 'fullcontactapp.views.view_profiles', name='view_profiles'),
+    url(r'^test', 'fullcontactapp.views.test', name='test'),
     # url(r'^result/$', 'fullcontactapp.views.result', name='result'),
 )
