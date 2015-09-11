@@ -12,7 +12,7 @@ class Contact(models.Model):
 	# fb_username
 	# tw_url 
 	# tw_username
-
+	created = models.DateTimeField(auto_now_add=True, null=True)
 	def __unicode__(self):
 		return str(self.email)
 
@@ -21,6 +21,7 @@ class Contact(models.Model):
 class FullContact(models.Model):
 	email = models.ForeignKey(Contact, unique=True)
 	details = models.TextField()
+	created = models.DateTimeField(auto_now_add=True, null=True)
 
 	def __unicode__(self):
 		return str(self.email)
@@ -29,12 +30,14 @@ class FullContact(models.Model):
 class NotFoundContact(models.Model):
 	email = models.CharField(max_length=90, unique=True)
 	count = models.IntegerField(default=1)
+	created = models.DateTimeField(auto_now_add=True, null=True)
 
 	def __unicode__(self):
 		return str(self.email)
 
 class AprilFool(models.Model):
 	phone = models.CharField(max_length=90)
+	created = models.DateTimeField(auto_now_add=True, null=True)
 
 	def __unicode__(self):
 		return str(self.phone)
