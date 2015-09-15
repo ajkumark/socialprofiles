@@ -53,7 +53,6 @@ ROOT_URLCONF = 'getcontactdetails.urls'
 
 WSGI_APPLICATION = 'getcontactdetails.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
@@ -96,6 +95,8 @@ TEMPLATE_DIRS = (
     )
 
 FULLCONTACT_API_KEY = '54ea4d775dcfd08'
+
+DUMMY_KEYS = ['54ea4d775dcfd08','d8fd10698582404c','b266589c757100e', 'dee2bcef9bb2a501', '9e2f79472166a555']
 
 EMAIL_USE_TLS = True 
 EMAIL_HOST = 'smtp.mandrillapp.com'

@@ -1,5 +1,6 @@
 import ast
 import requests
+import random
 from django.shortcuts import render, render_to_response, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
@@ -10,43 +11,63 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
 from fullcontactapp.models import Contact, NotFoundContact, AprilFool, to_qdict, FullContact
-from getcontactdetails.settings import FULLCONTACT_API_KEY
+from getcontactdetails.settings import FULLCONTACT_API_KEY, DUMMY_KEYS
 
 import mandrill
 MANDRILL_API_KEY = settings.EMAIL_HOST_PASSWORD
 mandrill_client = mandrill.Mandrill(MANDRILL_API_KEY)
 
+def call_fullcontact_api(email, FULLCONTACT_API_KEY):
+	url = 'http://api.fullcontact.com/v2/person.json'
+	payload = {'email':email, 'apiKey':FULLCONTACT_API_KEY }
+	r = requests.get(url, params=payload)
+	return r
+
 def home(request):
 	if request.method == 'POST':
-		email = request.POST['email']
-		try:
-			contact = Contact.objects.get(email=email)
-			contact = contact.fullcontact_set.first()
-			details = ast.literal_eval(contact.details)
-		except ObjectDoesNotExist:
-			payload = {'email':email, 'apiKey':FULLCONTACT_API_KEY }
-			url = 'http://api.fullcontact.com/v2/person.json'
-			r = requests.get(url, params=payload)
-			if r.status_code == 200:
-				contact = Contact.objects.create(email=email)
-				contact.save()
-				details = r.json()
-				contact = contact.fullcontact_set.create(email=email, details=details)
-				contact.save()
-			else:
-				try:
-					notfound = NotFoundContact.objects.get(email=email)
-					notfound.count += 1
-					notfound.save()
-				except ObjectDoesNotExist:
-					notfound = NotFoundContact.objects.create(email=email)
-					notfound.save()
-				details = None
-				msg = 'msg'
-				return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
-		qdict = QueryDict('', mutable=True)
-		qdict.update(details)
-		return render_to_response('result.html', context_instance=RequestContext(request, {'data':qdict, 'email':contact.email}))
+		recaptcha =  request.POST.get('g-recaptcha-response')
+		if recaptcha:
+			email = request.POST['email']
+			rejected_list = []
+			try:
+				contact = Contact.objects.get(email=email)
+				contact = contact.fullcontact_set.first()
+				details = ast.literal_eval(contact.details)
+			except ObjectDoesNotExist:
+				r = call_fullcontact_api(email,FULLCONTACT_API_KEY)
+				if r.status_code == 403:
+					rejected_list.append(FULLCONTACT_API_KEY)
+					if len(rejected_list) == len(DUMMY_KEYS):
+						print "return loop"
+						msg = 'msg'
+						return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
+					else:
+						new_key = random.choice(filter(lambda x:x not in rejected_list, DUMMY_KEYS))
+						print "new_key", new_key
+						r =  call_fullcontact_api(email,new_key)
+				if r.status_code == 200:
+					contact = Contact.objects.create(email=email)
+					contact.save()
+					details = r.json()
+					contact = contact.fullcontact_set.create(email=email, details=details)
+					contact.save()
+				else:
+					try:
+						notfound = NotFoundContact.objects.get(email=email)
+						notfound.count += 1
+						notfound.save()
+					except ObjectDoesNotExist:
+						notfound = NotFoundContact.objects.create(email=email)
+						notfound.save()
+					details = None
+					msg = 'msg'
+					return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
+			qdict = QueryDict('', mutable=True)
+			qdict.update(details)
+			return render_to_response('result.html', context_instance=RequestContext(request, {'data':qdict, 'email':contact.email}))
+		else:
+			msg = 'captcha'
+			return render_to_response('home.html', context_instance=RequestContext(request, {'msg':msg}))
 	else:
 		msg = 'ssss'
 		return render_to_response('home.html', context_instance=RequestContext(request, {}))
